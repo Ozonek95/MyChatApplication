@@ -1,6 +1,7 @@
 package com.mychat.server;
 
 
+import com.mychat.client.ClientChat;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,5 +33,13 @@ public class ServerTest {
     @Test
     public void testIfSocketIsCreatedOnCorrectPortNumber(){
         Assert.assertEquals(8000,serverChat.getServerSocket().getLocalPort());
+    }
+
+    @Test
+    public void checkIfClientConnectToServer(){
+
+        ClientChat clientChat = new ClientChat("localhost",8000);
+        clientChat.startClient();
+        Assert.assertNotNull(clientChat.getSocket());
     }
 }
