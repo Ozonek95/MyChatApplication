@@ -1,6 +1,5 @@
 package com.mychat.server;
 
-import com.mychat.client.ClientChat;
 
 public class ServerMain {
     public static void main(String[] args) {

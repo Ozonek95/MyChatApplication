@@ -1,5 +1,7 @@
 package com.mychat.client;
 
+import com.mychat.view.View;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +14,7 @@ public class ClientChat {
     private Socket socket;
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
+    private View view;
 
 
     public ClientChat(String ip, int port) {
