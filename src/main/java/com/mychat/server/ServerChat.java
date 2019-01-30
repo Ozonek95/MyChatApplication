@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ServerChat {
     private ArrayList<PrintWriter> clientsPrintWriters = new ArrayList<PrintWriter>();
@@ -73,6 +74,15 @@ public class ServerChat {
             try {
                 while ((message = bufferedReader.readLine()) != null) {
                     System.out.println(message + " Message from client");
+
+                    Iterator<PrintWriter> iterator = clientsPrintWriters.iterator();
+
+                    while (iterator.hasNext()){
+                        PrintWriter writer = iterator.next();
+                        writer.println(message + " Respone from server");
+                        writer.flush();
+
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
