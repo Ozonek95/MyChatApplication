@@ -56,7 +56,6 @@ public class ClientChat {
             try {
 
                 while ((message=bufferedReader.readLine())!=null){
-                    System.out.println(message+" FROM RUN");
                     view.write(message);
                 }
             } catch (Exception e){

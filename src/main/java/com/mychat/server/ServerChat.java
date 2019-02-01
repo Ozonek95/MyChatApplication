@@ -40,7 +40,6 @@ public class ServerChat {
 
 
                 Socket socket = serverSocket.accept();
-                System.out.println("ACCEPTED SOCKET");
                 PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
                 clientsPrintWriters.add(printWriter);
                 Thread thread = new Thread(new MessagesReceiver(socket));
@@ -71,11 +70,9 @@ public class ServerChat {
             String message;
             try {
                 while ((message = bufferedReader.readLine()) != null) {
-                    System.out.println(message + " Message from client");
                     Iterator<PrintWriter> iterator = clientsPrintWriters.iterator();
                     while (iterator.hasNext()) {
                         PrintWriter clientChat = iterator.next();
-                        System.out.println("Printing message to "+clientChat);
                         clientChat.println(message);
                         clientChat.flush();
                     }
