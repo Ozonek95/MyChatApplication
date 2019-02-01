@@ -11,6 +11,6 @@
       <TextArea fx:id="chat" layoutX="42.0" layoutY="78.0" prefHeight="267.0" prefWidth="724.0" />
       <TextField fx:id="message" layoutX="42.0" layoutY="373.0" onKeyPressed="#typedEnter" prefHeight="25.0" prefWidth="608.0" />
       <Button fx:id="sendButton" layoutX="665.0" layoutY="373.0" mnemonicParsing="false" onMouseClicked="#sendButtonActionPerformed" prefHeight="25.0" prefWidth="106.0" text="Send" />
-      <Button fx:id="connectToServerButton" layoutX="51.0" layoutY="28.0" mnemonicParsing="false" onMouseClicked="#listenButtonActionPerformed" prefHeight="25.0" prefWidth="186.0" text="Connect to Server" />
+      <Button fx:id="connectToServerButton" layoutX="51.0" layoutY="28.0" mnemonicParsing="false" onMouseClicked="#connectToServer" prefHeight="25.0" prefWidth="186.0" text="Connect to Server" />
    </children>
 </Pane>

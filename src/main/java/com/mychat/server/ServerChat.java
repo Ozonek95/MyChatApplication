@@ -1,5 +1,7 @@
 package com.mychat.server;
 
+import com.mychat.client.ClientChat;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ServerChat {
-    private ArrayList<PrintWriter> clientsPrintWriters = new ArrayList<PrintWriter>();
+    private ArrayList<PrintWriter> clientsPrintWriters = new ArrayList<>();
     private final int port;
     private ServerSocket serverSocket;
 
@@ -26,10 +28,6 @@ public class ServerChat {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public ArrayList<PrintWriter> getClientsPrintWriters() {
-        return clientsPrintWriters;
     }
 
     public ServerSocket getServerSocket() {
@@ -62,7 +60,7 @@ public class ServerChat {
         public MessagesReceiver(Socket clientSocket) {
             this.clientSocket = clientSocket;
             try {
-                bufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                bufferedReader = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -74,15 +72,15 @@ public class ServerChat {
             try {
                 while ((message = bufferedReader.readLine()) != null) {
                     System.out.println(message + " Message from client");
-
                     Iterator<PrintWriter> iterator = clientsPrintWriters.iterator();
-
-                    while (iterator.hasNext()){
-                        PrintWriter writer = iterator.next();
-                        writer.println(message + " Respone from server");
-                        writer.flush();
-
+                    while (iterator.hasNext()) {
+                        PrintWriter clientChat = iterator.next();
+                        System.out.println("Printing message to "+clientChat);
+                        clientChat.println(message);
+                        clientChat.flush();
                     }
+//
+//                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

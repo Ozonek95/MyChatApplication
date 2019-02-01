@@ -17,7 +17,8 @@ public class ClientChat {
     private View view;
 
 
-    public ClientChat(String ip, int port) {
+    public ClientChat(String ip, int port, View view) {
+        this.view=view;
         IP = ip;
         PORT = port;
     }
@@ -28,7 +29,7 @@ public class ClientChat {
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printWriter = new PrintWriter(socket.getOutputStream());
 
-            Thread thread = new Thread(new MessageReceiver());
+            Thread thread = new Thread(new MessageReceiver(bufferedReader));
             thread.start();
 
         } catch (IOException e) {
@@ -37,27 +38,31 @@ public class ClientChat {
     }
 
     public void writeToServer(String  message){
-        printWriter.println("Hello from client "+message);
+        printWriter.println(message);
         printWriter.flush();
     }
 
     class MessageReceiver implements Runnable{
+
+        BufferedReader bufferedReader;
+
+        public MessageReceiver(BufferedReader bufferedReader) {
+            this.bufferedReader = bufferedReader;
+            System.out.println(bufferedReader);
+        }
 
         public void run() {
             String message;
             try {
 
                 while ((message=bufferedReader.readLine())!=null){
-                    System.out.println(message);
+                    System.out.println(message+" FROM RUN");
+                    view.write(message);
                 }
             } catch (Exception e){
                 e.printStackTrace();
             }
 
         }
-    }
-
-    public Socket getSocket() {
-        return socket;
     }
 }
