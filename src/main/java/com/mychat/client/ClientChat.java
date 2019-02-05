@@ -1,7 +1,6 @@
 package com.mychat.client;
 
 import com.mychat.com.chat.domain.Message;
-import com.mychat.view.FXView;
 import com.mychat.view.View;
 
 import java.io.*;
@@ -47,7 +46,7 @@ public class ClientChat {
     }
 
     public void writeToServer(String  message){
-        Message message1 = new Message(message, 1);
+        Message message1 = new Message(message, view.room());
         try {
             outputStream.writeObject(message1);
             outputStream.flush();
@@ -65,7 +64,6 @@ public class ClientChat {
         public MessageReceiver(BufferedReader bufferedReader, ObjectInputStream inputStream) {
             this.inputStream = inputStream;
             this.bufferedReader = bufferedReader;
-            System.out.println(inputStream);
         }
 
         public void run() {
@@ -73,7 +71,7 @@ public class ClientChat {
             try {
 
                 while ((message=(Message) inputStream.readObject())!=null){
-                    view.write(message.getMessage());
+                    view.write(message.getMessage(),message.getRoomId());
                 }
             } catch (Exception e){
                 e.printStackTrace();

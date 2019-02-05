@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ServerChat {
-    private ArrayList<ObjectOutputStream> clientsPrintWriters = new ArrayList<>();
+    private ArrayList<ObjectOutputStream> clientsOutputStreams = new ArrayList<>();
     private final int port;
     private ServerSocket serverSocket;
 
@@ -38,8 +38,7 @@ public class ServerChat {
 
                 Socket socket = serverSocket.accept();
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-                PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-                clientsPrintWriters.add(objectOutputStream);
+                clientsOutputStreams.add(objectOutputStream);
                 Thread thread = new Thread(new MessagesReceiver(socket));
                 thread.start();
 
@@ -70,14 +69,12 @@ public class ServerChat {
             Message message;
             try {
                 while ((message = (Message) inputStream.readObject()) != null) {
-                    Iterator<ObjectOutputStream> iterator = clientsPrintWriters.iterator();
+                    Iterator<ObjectOutputStream> iterator = clientsOutputStreams.iterator();
                     while (iterator.hasNext()) {
                         ObjectOutputStream clientChat = iterator.next();
                         clientChat.writeObject(message);
                         clientChat.flush();
                     }
-//
-//                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

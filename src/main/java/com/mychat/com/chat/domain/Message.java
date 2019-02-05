@@ -16,4 +16,8 @@ public class Message implements Serializable {
     public String getMessage() {
         return message;
     }
+
+    public int getRoomId() {
+        return roomId;
+    }
 }
