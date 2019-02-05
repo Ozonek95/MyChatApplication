@@ -1,14 +1,16 @@
 package com.mychat.view;
 
 import com.mychat.client.ClientChat;
+import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class FXView implements View{
+public class FXView implements View {
 
     @FXML
     public TextField message;
@@ -20,6 +22,8 @@ public class FXView implements View{
     public TextField nicknameField;
     @FXML
     public Button connectToServerButton;
+    @FXML
+    public ListView usersList;
 
     private ClientChat clientChat;
 
@@ -43,9 +47,18 @@ public class FXView implements View{
 
     @FXML
     public void connectToServer() {
-        ClientChat clientChat = new ClientChat("localhost",8000,this);
-        clientChat.startClient();
-        this.clientChat=clientChat;
-        System.out.println("Connected");
+        if (nicknameField.getText().equals("")) {
+             nicknameField.setPromptText("PROVIDE NICKNAME FIRST");
+        }
+        else {
+            ClientChat clientChat = new ClientChat("localhost", 8000, this);
+            clientChat.startClient();
+            this.clientChat = clientChat;
+            usersList.getItems().addAll("general");
+            System.out.println("Connected");
+            connectToServerButton.setText("Connected");
+            connectToServerButton.setDisable(true);
+
+        }
     }
 }

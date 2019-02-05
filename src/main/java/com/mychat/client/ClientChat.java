@@ -1,11 +1,10 @@
 package com.mychat.client;
 
+import com.mychat.com.chat.domain.Message;
+import com.mychat.view.FXView;
 import com.mychat.view.View;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientChat {
@@ -13,8 +12,9 @@ public class ClientChat {
     private final int PORT;
     private Socket socket;
     private BufferedReader bufferedReader;
-    private PrintWriter printWriter;
     private View view;
+    private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
 
 
     public ClientChat(String ip, int port, View view) {
@@ -23,13 +23,22 @@ public class ClientChat {
         PORT = port;
     }
 
+    public void disconnect(){
+        try {
+            if(socket!=null)
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void startClient(){
         try {
             socket = new Socket(IP,PORT);
+            outputStream = new ObjectOutputStream(socket.getOutputStream());
+            inputStream = new ObjectInputStream(socket.getInputStream());
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            printWriter = new PrintWriter(socket.getOutputStream());
 
-            Thread thread = new Thread(new MessageReceiver(bufferedReader));
+            Thread thread = new Thread(new MessageReceiver(bufferedReader,inputStream));
             thread.start();
 
         } catch (IOException e) {
@@ -38,25 +47,33 @@ public class ClientChat {
     }
 
     public void writeToServer(String  message){
-        printWriter.println(message);
-        printWriter.flush();
+        Message message1 = new Message(message, 1);
+        try {
+            outputStream.writeObject(message1);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     class MessageReceiver implements Runnable{
 
+        ObjectInputStream inputStream;
         BufferedReader bufferedReader;
 
-        public MessageReceiver(BufferedReader bufferedReader) {
+        public MessageReceiver(BufferedReader bufferedReader, ObjectInputStream inputStream) {
+            this.inputStream = inputStream;
             this.bufferedReader = bufferedReader;
-            System.out.println(bufferedReader);
+            System.out.println(inputStream);
         }
 
         public void run() {
-            String message;
+            Message message;
             try {
 
-                while ((message=bufferedReader.readLine())!=null){
-                    view.write(message);
+                while ((message=(Message) inputStream.readObject())!=null){
+                    view.write(message.getMessage());
                 }
             } catch (Exception e){
                 e.printStackTrace();

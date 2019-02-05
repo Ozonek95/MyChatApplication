@@ -1,18 +1,15 @@
 package com.mychat.server;
 
-import com.mychat.client.ClientChat;
+import com.mychat.com.chat.domain.Message;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ServerChat {
-    private ArrayList<PrintWriter> clientsPrintWriters = new ArrayList<>();
+    private ArrayList<ObjectOutputStream> clientsPrintWriters = new ArrayList<>();
     private final int port;
     private ServerSocket serverSocket;
 
@@ -40,8 +37,9 @@ public class ServerChat {
 
 
                 Socket socket = serverSocket.accept();
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
                 PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-                clientsPrintWriters.add(printWriter);
+                clientsPrintWriters.add(objectOutputStream);
                 Thread thread = new Thread(new MessagesReceiver(socket));
                 thread.start();
 
@@ -55,10 +53,12 @@ public class ServerChat {
 
         Socket clientSocket;
         BufferedReader bufferedReader;
+        ObjectInputStream inputStream;
 
         public MessagesReceiver(Socket clientSocket) {
             this.clientSocket = clientSocket;
             try {
+                inputStream = new ObjectInputStream(clientSocket.getInputStream());
                 bufferedReader = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -67,13 +67,13 @@ public class ServerChat {
         }
 
         public void run() {
-            String message;
+            Message message;
             try {
-                while ((message = bufferedReader.readLine()) != null) {
-                    Iterator<PrintWriter> iterator = clientsPrintWriters.iterator();
+                while ((message = (Message) inputStream.readObject()) != null) {
+                    Iterator<ObjectOutputStream> iterator = clientsPrintWriters.iterator();
                     while (iterator.hasNext()) {
-                        PrintWriter clientChat = iterator.next();
-                        clientChat.println(message);
+                        ObjectOutputStream clientChat = iterator.next();
+                        clientChat.writeObject(message);
                         clientChat.flush();
                     }
 //

@@ -16,7 +16,7 @@ public class MyChatRun extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("chat-app.fxml"));
         primaryStage.setTitle("Chat");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 1000, 1000));
         primaryStage.show();
     }
 }
