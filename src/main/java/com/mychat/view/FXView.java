@@ -7,13 +7,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import java.util.Arrays;
-import java.util.List;
+import javafx.scene.input.MouseEvent;
+
+import java.io.IOException;
 
 public class FXView implements View {
 
-
-    public List<StringBuilder> texts = Arrays.asList(new StringBuilder(), new StringBuilder());
     @FXML
     public TextField message;
     @FXML
@@ -27,20 +26,18 @@ public class FXView implements View {
 
     private ClientChat clientChat;
 
-    private int actualRoom = 0;
 
     public void write(String message, int roomId) {
 
         System.out.println(message);
-        texts.get(roomId).append(message+System.lineSeparator());
-        if(actualRoom==roomId){
-        chat.appendText(message + System.lineSeparator());
+        clientChat.getStringBuilders().get(roomId).append(message + System.lineSeparator());
+        if (clientChat.getCurrentChannelNumber() == roomId) {
+            chat.appendText(message + System.lineSeparator());
         }
     }
 
-    @Override
-    public int room() {
-        return actualRoom;
+    public void errorMessage(String message) {
+        connectToServerButton.setText(message);
     }
 
     @FXML
@@ -62,20 +59,29 @@ public class FXView implements View {
             nicknameField.setPromptText("PROVIDE NICKNAME FIRST");
         } else {
             ClientChat clientChat = new ClientChat("localhost", 8000, this);
-            clientChat.startClient();
-            this.clientChat = clientChat;
-            connectToServerButton.setText("Connected");
-            connectToServerButton.setDisable(true);
+            try {
+                clientChat.startClient();
+                this.clientChat = clientChat;
+                connectToServerButton.setText("Connected");
+                connectToServerButton.setDisable(true);
+            } catch (IOException e) {
+                errorMessage("Cannot connect to Server");
+            }
         }
     }
 
-    public void channel1Click() {
-        this.actualRoom = 0;
-        chat.setText(texts.get(0).toString());
+    public void channelOneClicked() {
+        clientChat.setCurrentChannelNumber(0);
+        chat.setText(clientChat.getStringBuilders().get(0).toString());
     }
 
-    public void channel2Click() {
-        this.actualRoom = 1;
-        chat.setText(texts.get(1).toString());
+    public void channelTwoClicked() {
+        clientChat.setCurrentChannelNumber(1);
+        chat.setText(clientChat.getStringBuilders().get(1).toString());
+    }
+
+    public void channelThreeClicked() {
+        clientChat.setCurrentChannelNumber(2);
+        chat.setText(clientChat.getStringBuilders().get(2).toString());
     }
 }

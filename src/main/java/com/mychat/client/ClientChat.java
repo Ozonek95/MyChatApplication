@@ -5,15 +5,17 @@ import com.mychat.view.View;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 public class ClientChat {
     private final String IP;
     private final int PORT;
     private Socket socket;
-    private BufferedReader bufferedReader;
     private View view;
     private ObjectOutputStream outputStream;
-    private ObjectInputStream inputStream;
+    private int currentChannelNumber;
+    private List<StringBuilder> stringBuilders = Arrays.asList(new StringBuilder(), new StringBuilder(), new StringBuilder());
 
 
     public ClientChat(String ip, int port, View view) {
@@ -30,23 +32,20 @@ public class ClientChat {
             e.printStackTrace();
         }
     }
-    public void startClient(){
-        try {
+    public void startClient() throws IOException {
+
             socket = new Socket(IP,PORT);
             outputStream = new ObjectOutputStream(socket.getOutputStream());
-            inputStream = new ObjectInputStream(socket.getInputStream());
-            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            Thread thread = new Thread(new MessageReceiver(bufferedReader,inputStream));
+            Thread thread = new Thread(new MessageReceiver(bufferedReader, inputStream));
             thread.start();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void writeToServer(String  message){
-        Message message1 = new Message(message, view.room());
+        Message message1 = new Message(message,this.currentChannelNumber);
         try {
             outputStream.writeObject(message1);
             outputStream.flush();
@@ -78,5 +77,17 @@ public class ClientChat {
             }
 
         }
+    }
+
+    public int getCurrentChannelNumber() {
+        return currentChannelNumber;
+    }
+
+    public void setCurrentChannelNumber(int currentChannelNumber) {
+        this.currentChannelNumber = currentChannelNumber;
+    }
+
+    public List<StringBuilder> getStringBuilders() {
+        return stringBuilders;
     }
 }

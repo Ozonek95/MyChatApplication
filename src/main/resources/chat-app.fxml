@@ -12,7 +12,8 @@
       <TextField fx:id="message" layoutX="42.0" layoutY="373.0" onKeyPressed="#typedEnter" prefHeight="25.0" prefWidth="608.0" />
       <Button fx:id="sendButton" layoutX="665.0" layoutY="373.0" mnemonicParsing="false" onMouseClicked="#sendButtonActionPerformed" prefHeight="25.0" prefWidth="106.0" text="Send" />
       <Button fx:id="connectToServerButton" layoutX="51.0" layoutY="28.0" mnemonicParsing="false" onMouseClicked="#connectToServer" prefHeight="25.0" prefWidth="186.0" text="Connect to Server" />
-      <Button layoutX="830.0" layoutY="78.0" mnemonicParsing="false" onMouseClicked="#channel1Click" text="Channel 1" />
-      <Button layoutX="830.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#channel2Click" text="Channel 2" />
+      <Button layoutX="830.0" layoutY="78.0" mnemonicParsing="false" onMouseClicked="#channelOneClicked" text="Channel 1" />
+      <Button layoutX="830.0" layoutY="127.0" mnemonicParsing="false" onMouseClicked="#channelTwoClicked" text="Channel 2" />
+      <Button layoutX="830.0" layoutY="173.0" mnemonicParsing="false" onMouseClicked="#channelThreeClicked" text="Channel 3" />
    </children>
 </Pane>
