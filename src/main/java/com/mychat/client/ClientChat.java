@@ -1,6 +1,9 @@
 package com.mychat.client;
 
+import com.mychat.com.chat.domain.Channel;
+import com.mychat.com.chat.domain.DrunkChannel;
 import com.mychat.com.chat.domain.Message;
+import com.mychat.com.chat.domain.NormalChannel;
 import com.mychat.view.View;
 
 import java.io.*;
@@ -16,6 +19,8 @@ public class ClientChat {
     private ObjectOutputStream outputStream;
     private int currentChannelNumber;
     private List<StringBuilder> stringBuilders = Arrays.asList(new StringBuilder(), new StringBuilder(), new StringBuilder());
+    private List<Channel> channels = Arrays.asList(new NormalChannel(),new DrunkChannel());
+    private Channel currentChannel = channels.get(0);
 
 
     public ClientChat(String ip, int port, View view) {
@@ -70,7 +75,7 @@ public class ClientChat {
             try {
 
                 while ((message=(Message) inputStream.readObject())!=null){
-                    view.write(message.getMessage(),message.getRoomId());
+                    view.write(currentChannel.writeToStringBuilder(message.getMessage()),message.getRoomId());
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -85,6 +90,7 @@ public class ClientChat {
 
     public void setCurrentChannelNumber(int currentChannelNumber) {
         this.currentChannelNumber = currentChannelNumber;
+        this.currentChannel = channels.get(currentChannelNumber);
     }
 
     public List<StringBuilder> getStringBuilders() {

@@ -1,7 +1,5 @@
 package com.mychat.com.chat.domain;
 
-import com.mychat.client.ClientChat;
-
 import java.io.Serializable;
 
 public class Message implements Serializable {
